@@ -1,4 +1,7 @@
 # Task Planning React App
+![Screenshot 2025-01-05 192558](https://github.com/user-attachments/assets/ec35574f-0f0e-4ea9-91ca-e8fe873a2a67)
+
+
 
 A modern task management application built with **React.js** and **TypeScript**, designed to help users efficiently organize and track tasks. The app utilizes **Firebase** for authentication and data storage, and **React Query** for seamless data fetching and state management.
 
@@ -7,7 +10,11 @@ A modern task management application built with **React.js** and **TypeScript**,
 - User Authentication (Signup/Login) with Firebase
 - Create, Read, Update, and Delete (CRUD) tasks
 - Real-time data syncing across devices
-- Task categorization and prioritization
+- Task categorization and prioritization as Lists and Kanban View
+- ![Screenshot 2025-01-09 182323](https://github.com/user-attachments/assets/34e57de7-1b6f-4676-aabb-591c2de4b0f7)
+
+- ![Screenshot 2025-01-10 011553](https://github.com/user-attachments/assets/76f5de8d-59f4-402b-a1d2-fbc3cb51f80f)
+- 
 - Responsive and intuitive UI/UX
 - State management with React Query
 - Push notifications for task reminders
