@@ -1,0 +1,11 @@
+@import url("https://fonts.googleapis.com/css2?family=Mulish:wght@400;500;600;700&display=swap");
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+
+body {
+  @apply font-sans; /* Ensure Tailwind applies its base styles */
+  font-family: "Mulish", sans-serif; /* Apply Mulish globally */
+}
