@@ -1,50 +1,107 @@
-# React + TypeScript + Vite
+# Task Planning React App
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A modern task management application built with **React.js** and **TypeScript**, designed to help users efficiently organize and track tasks. The app utilizes **Firebase** for authentication and data storage, and **React Query** for seamless data fetching and state management.
 
-Currently, two official plugins are available:
+## 🚀 Features
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+- User Authentication (Signup/Login) with Firebase
+- Create, Read, Update, and Delete (CRUD) tasks
+- Real-time data syncing across devices
+- Task categorization and prioritization
+- Responsive and intuitive UI/UX
+- State management with React Query
+- Push notifications for task reminders
 
-## Expanding the ESLint configuration
+## 🛠 Tech Stack
 
-If you are developing a production application, we recommend updating the configuration to enable type aware lint rules:
+- **Frontend:** React.js, TypeScript, React Query, Tailwind CSS (optional)
+- **Backend/Database:** Firebase Authentication & Firestore
+- **State Management:** React Query
+- **Deployment:** Vercel/Netlify (optional)
 
-- Configure the top-level `parserOptions` property like this:
+## 📦 Installation
 
-```js
-export default tseslint.config({
-  languageOptions: {
-    // other options...
-    parserOptions: {
-      project: ['./tsconfig.node.json', './tsconfig.app.json'],
-      tsconfigRootDir: import.meta.dirname,
-    },
-  },
-})
+1. **Clone the repository:**
+   ```bash
+   git clone https://github.com/your-username/task-planning-app.git
+   cd task-planning-app
+   ```
+
+2. **Install dependencies:**
+   ```bash
+   npm install
+   # or
+   yarn install
+   ```
+
+3. **Set up environment variables:**
+   - Create a `.env` file in the root directory.
+   - Add the following Firebase configuration:
+     ```env
+     VITE_FIREBASE_API_KEY=your_api_key
+     VITE_FIREBASE_AUTH_DOMAIN=your_project_id.firebaseapp.com
+     VITE_FIREBASE_PROJECT_ID=your_project_id
+     VITE_FIREBASE_STORAGE_BUCKET=your_project_id.appspot.com
+     VITE_FIREBASE_MESSAGING_SENDER_ID=your_sender_id
+     VITE_FIREBASE_APP_ID=your_app_id
+     ```
+
+4. **Run the development server:**
+   ```bash
+   npm run dev
+   # or
+   yarn dev
+   ```
+   
+   Visit `http://localhost:5173` to view the app in your browser.
+
+## 📂 Folder Structure
+
+```
+├── public
+│   └── index.html
+├── src
+│   ├── assets
+│   ├── components
+│   │   ├── TaskList.tsx
+│   │   └── TaskItem.tsx
+│   ├── hooks
+│   │   └── useTasks.ts
+│   ├── pages
+│   │   ├── Dashboard.tsx
+│   │   └── Login.tsx
+│   ├── services
+│   │   └── firebase.ts
+│   ├── utils
+│   │   └── helpers.ts
+│   ├── App.tsx
+│   └── main.tsx
+├── .env
+├── package.json
+└── README.md
 ```
 
-- Replace `tseslint.configs.recommended` to `tseslint.configs.recommendedTypeChecked` or `tseslint.configs.strictTypeChecked`
-- Optionally add `...tseslint.configs.stylisticTypeChecked`
-- Install [eslint-plugin-react](https://github.com/jsx-eslint/eslint-plugin-react) and update the config:
+## ⚙️ Available Scripts
 
-```js
-// eslint.config.js
-import react from 'eslint-plugin-react'
+- `npm run dev` — Starts the development server.
+- `npm run build` — Builds the app for production.
+- `npm run lint` — Runs ESLint to check for code issues.
 
-export default tseslint.config({
-  // Set the react version
-  settings: { react: { version: '18.3' } },
-  plugins: {
-    // Add the react plugin
-    react,
-  },
-  rules: {
-    // other rules...
-    // Enable its recommended rules
-    ...react.configs.recommended.rules,
-    ...react.configs['jsx-runtime'].rules,
-  },
-})
-```
+## 🤝 Contributing
+
+Contributions are welcome! Please follow these steps:
+
+1. Fork the repository.
+2. Create a new branch (`git checkout -b feature/your-feature`).
+3. Commit your changes (`git commit -m 'Add new feature'`).
+4. Push to the branch (`git push origin feature/your-feature`).
+5. Open a Pull Request.
+
+## 📄 License
+
+This project is licensed under the MIT License.
+
+---
+
+*Happy Coding! 🚀*
+
