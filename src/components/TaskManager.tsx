@@ -86,10 +86,12 @@ const TaskManager = ({
   };
 
   const handleMenuOpen = (event: React.MouseEvent<HTMLElement>) => {
+    event.stopPropagation();
     setAnchorEl(event.currentTarget);
   };
 
-  const handleMenuClose = () => {
+  const handleMenuClose = (event: React.MouseEvent<HTMLElement>) => {
+    event.stopPropagation();
     setAnchorEl(null);
   };
 
@@ -313,6 +315,7 @@ const TaskManager = ({
                           <Checkbox
                             checked={selectedTasks.includes(task.id)}
                             onChange={() => toggleTaskSelection(task.id)}
+                            onClick={(e) => e.stopPropagation()}
                           />
                             <DragIndicatorIcon />
                             {task.status === "COMPLETED" ? (
@@ -352,8 +355,8 @@ const TaskManager = ({
                             onClose={handleMenuClose}
                           >
                             <MenuItem onClick={handleMenuClose}>Edit</MenuItem>
-                            <MenuItem onClick={() => {
-                              handleMenuClose();
+                            <MenuItem onClick={(event) => {
+                              handleMenuClose(event);
                               onDeleteTask(task.id);
                             }}>Delete</MenuItem>
                           </Menu>
