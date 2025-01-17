@@ -12,6 +12,8 @@ import {
   Button,
   Select,
   MenuItem as DropdownItem,
+  Checkbox,
+  Snackbar,
 } from "@mui/material";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
@@ -49,6 +51,28 @@ const TaskManager = ({
 
   const [selectedTask, setSelectedTask] = useState<Task | null>(null);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [selectedTasks, setSelectedTasks] = useState<string[]>([]);
+  const [isSnackbarOpen, setIsSnackbarOpen] = useState(false);
+
+  const toggleTaskSelection = (taskId: string) => {
+    setSelectedTasks((prev) =>
+      prev.includes(taskId)
+        ? prev.filter((id) => id !== taskId)
+        : [...prev, taskId]
+    );
+  };
+
+  const handleBulkStatusChange = (status: Task["status"]) => {
+    selectedTasks.forEach((taskId) => onUpdateTask(taskId, { status }));
+    setSelectedTasks([]);
+    setIsSnackbarOpen(true);
+  };
+
+  const handleBulkDelete = () => {
+    selectedTasks.forEach((taskId) => onDeleteTask(taskId));
+    setSelectedTasks([]);
+    setIsSnackbarOpen(true);
+  };
 
   const handleTaskClick = (task: Task) => {
     setSelectedTask(task);
@@ -170,10 +194,10 @@ const TaskManager = ({
         px={2}
         sx={{ fontWeight: "bold", fontFamily: "Mulish, sans-serif" }}
       >
-        <Typography sx={{ fontFamily: "Mulish, sans-serif", fontWeight: "bold" }}>Task Name</Typography>
-        <Typography sx={{ fontFamily: "Mulish, sans-serif", fontWeight: "bold" }}>Due On</Typography>
-        <Typography sx={{ fontFamily: "Mulish, sans-serif", fontWeight: "bold" }}>Task Status</Typography>
-        <Typography sx={{ fontFamily: "Mulish, sans-serif", fontWeight: "bold" }}>Task Category</Typography>
+        <Typography sx={{ fontFamily: "Mulish, sans-serif", fontWeight: "semi-bold" }}>Task Name</Typography>
+        <Typography sx={{ fontFamily: "Mulish, sans-serif", fontWeight: "semi-bold" }}>Due On</Typography>
+        <Typography sx={{ fontFamily: "Mulish, sans-serif", fontWeight: "semi-bold" }}>Task Status</Typography>
+        <Typography sx={{ fontFamily: "Mulish, sans-serif", fontWeight: "semi-bold" }}>Task Category</Typography>
       </Box>
 
       {/* Task Sections */}
@@ -286,13 +310,17 @@ const TaskManager = ({
                           sx={{ cursor: "pointer" }}
                         >
                           <Box display="flex" alignItems="center" gap={1}>
+                          <Checkbox
+                            checked={selectedTasks.includes(task.id)}
+                            onChange={() => toggleTaskSelection(task.id)}
+                          />
                             <DragIndicatorIcon />
                             {task.status === "COMPLETED" ? (
                               <CheckCircleIcon color="success" />
                             ) : (
                               <RadioButtonUncheckedIcon color="disabled" />
                             )}
-                            <Typography sx={{ fontFamily: "Mulish, sans-serif", fontWeight: "bold" }}>{task.title}</Typography>
+                            <Typography sx={{ fontFamily: "Mulish, sans-serif", fontWeight: "bold", textDecoration: task.status === "COMPLETED" ? "line-through" : "none" }}>{task.title}</Typography>
                           </Box>
                           <Typography sx={{ fontFamily: "Mulish, sans-serif", fontWeight: "bold" }}>{task.dueDate}</Typography>
                             <Select
@@ -306,12 +334,13 @@ const TaskManager = ({
                               backgroundColor: '#DDDADD', 
                               borderRadius: 3, 
                               padding: 1, 
-                              width: '50%' 
+                              width: '50%', 
+                              border: 'none',
                               }}
                             >
-                              <DropdownItem value="TO-DO" >To-Do</DropdownItem>
-                              <DropdownItem value="IN-PROGRESS">In Progress</DropdownItem>
-                              <DropdownItem value="COMPLETED">Completed</DropdownItem>
+                              <DropdownItem value="TO-DO" >TO-DO</DropdownItem>
+                              <DropdownItem value="IN-PROGRESS">IN PROGRESS</DropdownItem>
+                              <DropdownItem value="COMPLETED">COMPLETED</DropdownItem>
                             </Select>
                           <Typography sx={{ fontFamily: "Mulish, sans-serif", fontWeight: "bold" }}>{task.category.join(", ")}</Typography>
                           <IconButton onClick={handleMenuOpen}>
@@ -347,6 +376,37 @@ const TaskManager = ({
           onUpdateTask={onUpdateTask}
         />
       )}
+
+      {/* Bulk Actions */}
+      {selectedTasks.length > 0 && (
+        <Box
+          position="fixed"
+          bottom={16}
+          left="50%"
+          sx={{ transform: "translateX(-50%)", backgroundColor: "#333", borderRadius: 2, p: 2, display: "flex", gap: 2 }}
+        >
+          <Typography color="white">{selectedTasks.length} Task(s) Selected</Typography>
+          <Select
+            value=""
+            displayEmpty
+            onChange={(e) => handleBulkStatusChange(e.target.value as Task["status"])}
+          >
+            <DropdownItem value="TO-DO">To-Do</DropdownItem>
+            <DropdownItem value="IN-PROGRESS">In Progress</DropdownItem>
+            <DropdownItem value="COMPLETED">Completed</DropdownItem>
+          </Select>
+          <Button variant="contained" color="error" onClick={handleBulkDelete}>
+            Delete
+          </Button>
+        </Box>
+      )}
+
+      <Snackbar
+        open={isSnackbarOpen}
+        autoHideDuration={3000}
+        onClose={() => setIsSnackbarOpen(false)}
+        message="Action completed successfully!"
+      />
     </Box>
   );
 };

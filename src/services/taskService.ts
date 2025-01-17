@@ -8,6 +8,7 @@ import {
   doc,
   updateDoc,
   deleteDoc,
+  getDoc
 } from "firebase/firestore";
 import { db } from "../firebase";
 import { Task } from "../types/task";
@@ -51,21 +52,41 @@ export const addTask = async (
 
     console.log("Adding task:", newTask);
 
-    // 🔥 Let Firestore generate the document ID
+    // Add task to Firestore
     const docRef = await addDoc(tasksRef, newTask);
 
-    // ✅ Return the task with Firestore's document ID
+    // ✅ Correct way to fetch the added task data
+    const addedTaskSnapshot = await getDoc(doc(db, "tasks", docRef.id));
+
+    if (!addedTaskSnapshot.exists()) {
+      throw new Error("Failed to fetch the added task.");
+    }
+
+    const addedTaskData = addedTaskSnapshot.data();
+
     return {
-      ...task,
-      id: docRef.id, // Correct ID from Firestore
-      createdAt: newTask.createdAt ? (newTask.createdAt as Timestamp).toDate().toISOString() : "",
-      updatedAt: newTask.updatedAt ? (newTask.updatedAt as Timestamp).toDate().toISOString() : "",
+      id: docRef.id,
+      title: addedTaskData?.title,
+      description: addedTaskData?.description,
+      dueDate: addedTaskData?.dueDate,
+      category: addedTaskData?.category,
+      status: addedTaskData?.status,
+      createdBy: addedTaskData?.createdBy,
+      attachment: addedTaskData?.attachment || "",
+      createdAt: addedTaskData?.createdAt
+        ? (addedTaskData.createdAt as Timestamp).toDate().toISOString()
+        : "",
+      updatedAt: addedTaskData?.updatedAt
+        ? (addedTaskData.updatedAt as Timestamp).toDate().toISOString()
+        : "",
     };
   } catch (error) {
     console.error("Error adding task:", error);
     throw error;
   }
 };
+
+
 
 
 // ✅ Update Task (Fixed)

@@ -7,7 +7,6 @@ import {
   Button,
   Select,
   MenuItem,
-  InputLabel,
   FormControl,
   Chip,
   IconButton,
@@ -68,21 +67,22 @@ const AddTaskModal = ({
   return (
     <Modal open={open} onClose={onClose}>
       <Box
+      
         sx={{
           position: "absolute",
           top: "50%",
           left: "50%",
           transform: "translate(-50%, -50%)",
-          width: 500,
+          width: 600,
           bgcolor: "background.paper",
           boxShadow: 24,
-          p: 4,
-          borderRadius: 2,
+          borderRadius: 3,
+          overflow: "hidden",
         }}
       >
         {/* Modal Header */}
-        <Box display="flex" justifyContent="space-between" alignItems="center" mb={2}>
-          <Typography variant="h6" fontWeight="bold">
+        <Box display="flex" justifyContent="space-between" alignItems="center" p={3}>
+          <Typography variant="h5" fontWeight="semi-bold" fontFamily={'mulish'}>
             Create Task
           </Typography>
           <IconButton onClick={onClose}>
@@ -90,90 +90,91 @@ const AddTaskModal = ({
           </IconButton>
         </Box>
 
-        {/* Task Title */}
-        <TextField
-          label="Task Title"
-          fullWidth
-          variant="outlined"
-          value={title}
-          onChange={(e) => setTitle(e.target.value)}
-          margin="normal"
-        />
+        <Box px={3}>
+          {/* Task Title */}
+          <TextField
+            placeholder="Task title"
+            fullWidth
+            variant="outlined"
+            value={title}
+            onChange={(e) => setTitle(e.target.value)}
+            margin="normal"
+            InputProps={{ style: { fontFamily: 'mulish' } }}
+          
+          />
 
-        {/* Description */}
-        <TextField
-          label="Description"
-          fullWidth
-          variant="outlined"
-          multiline
-          rows={3}
-          value={description}
-          onChange={(e) => setDescription(e.target.value)}
-          margin="normal"
-          helperText={`${description.length}/300 characters`}
-        />
+          {/* Description */}
+          <TextField
+            placeholder="Description"
+            fullWidth
+            variant="outlined"
+            multiline
+            rows={4}
+            value={description}
+            onChange={(e) => setDescription(e.target.value)}
+            margin="normal"
+            helperText={`${description.length}/300 characters`}
+            InputProps={{ style: { fontFamily: 'mulish' } }}
+          />
 
-        {/* Task Category */}
-        <Box display="flex" flexDirection="column" mt={2}>
-          <Typography variant="subtitle1" fontWeight="bold" mb={1}>
-            Task Category*
-          </Typography>
-          <Box display="flex" gap={2} flexWrap="wrap">
-            {["Work", "Personal"].map((category) => (
-              <Chip
-                key={category}
-                label={category}
-                onClick={() => handleCategoryChange(category)}
-                color={categories.includes(category) ? "primary" : "default"}
-                variant={categories.includes(category) ? "filled" : "outlined"}
-              />
-            ))}
+          <Box display="flex" gap={2} mt={2}>
+            {/* Task Category */}
+            <Box flex={1}>
+              <Typography variant="subtitle2" fontWeight="bold" fontFamily={'mulish'}>
+                Task Category*
+              </Typography>
+              <Box display="flex" gap={1}>
+                {['Work', 'Personal'].map((category) => (
+                  <Chip
+                    key={category}
+                    label={category}
+                    onClick={() => handleCategoryChange(category)}
+                    color={categories.includes(category) ? 'primary' : 'default'}
+                    variant={categories.includes(category) ? 'filled' : 'outlined'}
+                    style={{fontFamily: 'mulish'}}
+                  />
+                ))}
+              </Box>
+            </Box>
+
+            {/* Due Date */}
+            <TextField
+              type="date"
+              variant="outlined"
+              value={dueDate}
+              onChange={(e) => setDueDate(e.target.value)}
+              InputLabelProps={{ shrink: true }}
+              fullWidth
+            />
+
+            {/* Task Status */}
+            <FormControl fullWidth>
+              <Select
+                displayEmpty
+                value={status}
+                onChange={(e) => setStatus(e.target.value as "TO-DO" | "IN-PROGRESS" | "COMPLETED")}
+              >
+                <MenuItem value="TO-DO">To-Do</MenuItem>
+                <MenuItem value="IN-PROGRESS">In Progress</MenuItem>
+                <MenuItem value="COMPLETED">Completed</MenuItem>
+              </Select>
+            </FormControl>
+          </Box>
+
+          {/* File Upload */}
+          <Box mt={3} p={2} border="2px dashed #ccc" borderRadius={2} textAlign="center" sx={{ cursor: 'pointer' }}>
+            <input type="file" hidden onChange={handleFileUpload} id="file-upload" />
+            <label htmlFor="file-upload">
+              <Typography variant="body2" color="textSecondary">
+                {attachment ? attachment.name : "Drop your files here or Click to Upload"}
+              </Typography>
+            </label>
           </Box>
         </Box>
 
-        {/* Due Date */}
-        <TextField
-          label="Due On*"
-          type="date"
-          fullWidth
-          variant="outlined"
-          value={dueDate}
-          onChange={(e) => setDueDate(e.target.value)}
-          margin="normal"
-          InputLabelProps={{
-            shrink: true,
-          }}
-        />
-
-        {/* Task Status */}
-        <FormControl fullWidth margin="normal">
-          <InputLabel>Task Status</InputLabel>
-          <Select value={status} onChange={(e) => setStatus(e.target.value as "TO-DO" | "IN-PROGRESS" | "COMPLETED")}>
-            <MenuItem value="TO-DO">To-Do</MenuItem>
-            <MenuItem value="IN-PROGRESS">In Progress</MenuItem>
-            <MenuItem value="COMPLETED">Completed</MenuItem>
-          </Select>
-        </FormControl>
-
-        {/* File Upload */}
-        <Box mt={2}>
-          <Typography variant="subtitle1" fontWeight="bold">
-            Attachment
-          </Typography>
-          <Button
-            variant="outlined"
-            component="label"
-            fullWidth
-            sx={{ mt: 1 }}
-          >
-            {attachment ? attachment.name : "Drop your files here or Update"}
-            <input type="file" hidden onChange={handleFileUpload} />
-          </Button>
-        </Box>
-
         {/* Footer Buttons */}
-        <Box display="flex" justifyContent="space-between" mt={4}>
-          <Button variant="outlined" onClick={onClose}>
+        <Box display="flex" justifyContent="flex-end" p={3} bgcolor="#F1F1F1" className="mt-4">
+          <Button variant="outlined" onClick={onClose} sx={{ borderRadius: 5, mr: 2 }}>
             Cancel
           </Button>
           <Button
@@ -181,6 +182,7 @@ const AddTaskModal = ({
             color="primary"
             onClick={handleSubmit}
             disabled={!title || !dueDate || categories.length === 0}
+            sx={{ borderRadius: 5 }}
           >
             Create
           </Button>
