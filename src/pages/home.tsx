@@ -24,7 +24,7 @@ const Home = () => {
   const [selectedTask, setSelectedTask] = useState<Task | null>(null);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   
-  // Function to handle task click
+
   const handleTaskClick = (task: Task) => {
     setSelectedTask(task);
     setIsDialogOpen(true);
@@ -36,10 +36,6 @@ const Home = () => {
     photo: localStorage.getItem("user_photo") || "",
   };
 
-  
-
-
-  // Fetch tasks on component mount
   useEffect(() => {
     const loadTasks = async () => {
       try {
@@ -54,7 +50,6 @@ const Home = () => {
     loadTasks();
   }, [user.name]);
 
-  // Add a new task
   const handleAddTask = async (taskData: Omit<Task, "id" | "createdAt" | "updatedAt">) => {
     try {
       const newTask = await addTask(taskData);
@@ -67,8 +62,6 @@ const Home = () => {
       console.error("Error adding task:", error);
     }
   };
-
-  // Update an existing task
   const handleUpdateTask = async (taskId: string, updatedFields: Partial<Task>) => {
     try {
       await updateTask(taskId, updatedFields);
@@ -82,7 +75,6 @@ const Home = () => {
     }
   };
 
-  // Delete a task
   const handleDeleteTask = async (taskId: string) => {
     try {
       await deleteTask(taskId);
@@ -94,28 +86,22 @@ const Home = () => {
     }
   };
 
-  // Handle Search
   const handleSearch = (query: string) => {
     setSearchQuery(query);
     applyFilters(tasks, filters, query);
   };
 
-  // Handle Filter Change
   const handleFilterChange = (updatedFilters: { category: string; startDate: Date | null; endDate: Date | null }) => {
     setFilters(updatedFilters);
     applyFilters(tasks, updatedFilters, searchQuery);
   };
-
-  // Apply search and filter logic
   const applyFilters = (allTasks: Task[], appliedFilters: typeof filters, searchQuery: string) => {
     let filtered = allTasks;
 
-    // Filter by category
     if (appliedFilters.category) {
       filtered = filtered.filter((task) => task.category.includes(appliedFilters.category));
     }
 
-    // Filter by date range
     if (appliedFilters.startDate && appliedFilters.endDate) {
       filtered = filtered.filter((task) => {
         const taskDueDate = new Date(task.dueDate);
@@ -123,7 +109,6 @@ const Home = () => {
       });
     }
 
-    // Search filter
     if (searchQuery.trim()) {
       filtered = filtered.filter((task) =>
         task.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -162,7 +147,6 @@ const Home = () => {
               onUpdateTask={handleUpdateTask}
               onDeleteTask={handleDeleteTask}
               setTasks={setTasks}
-              // onTaskClick={handleTaskClick}
             />
           )}
         </div>

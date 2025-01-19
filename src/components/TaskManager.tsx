@@ -87,7 +87,7 @@ const TaskManager = ({
   const handleMenuOpen = (event: React.MouseEvent<HTMLElement>, task: Task) => {
     event.stopPropagation();
     setAnchorEl(event.currentTarget);
-    setSelectedTask(task); // Properly set the selected task here
+    setSelectedTask(task);
   };
 
   const handleMenuClose = (event: React.MouseEvent<HTMLElement>) => {

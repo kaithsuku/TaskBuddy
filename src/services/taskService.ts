@@ -14,7 +14,6 @@ import { db } from "../firebase";
 import { Task } from "../types/task";
 import { Timestamp } from "firebase/firestore";
 
-// 🔎 Fetch tasks
 export const fetchTasks = async (userId: string): Promise<Task[]> => {
   try {
     const tasksRef = collection(db, "tasks");
@@ -27,19 +26,15 @@ export const fetchTasks = async (userId: string): Promise<Task[]> => {
     })) as Task[];
   } catch (error) {
     console.error("Error fetching tasks:", error);
-    // toast.error("Failed to load tasks. Please try again.");
     return [];
   }
 };
 
-// ✅ Add Task (Fixed)
 export const addTask = async (
   task: Omit<Task, "id" | "createdAt" | "updatedAt">
 ): Promise<Task | null> => {
   try {
     const tasksRef = collection(db, "tasks");
-
-    // Filter out undefined fields
     const filteredTask = Object.fromEntries(
       Object.entries(task).filter(([_, value]) => value !== undefined)
     );
@@ -51,11 +46,8 @@ export const addTask = async (
     };
 
     console.log("Adding task:", newTask);
-
-    // Add task to Firestore
     const docRef = await addDoc(tasksRef, newTask);
 
-    // ✅ Correct way to fetch the added task data
     const addedTaskSnapshot = await getDoc(doc(db, "tasks", docRef.id));
 
     if (!addedTaskSnapshot.exists()) {
@@ -87,9 +79,6 @@ export const addTask = async (
 };
 
 
-
-
-// ✅ Update Task (Fixed)
 export const updateTask = async (
   taskId: string,
   updatedFields: Partial<Task>
@@ -99,12 +88,10 @@ export const updateTask = async (
       Object.entries(updatedFields).filter(([_, value]) => value !== undefined)
     );
 
-    // Ensure attachment is handled
     if ("attachment" in updatedFields && updatedFields.attachment === undefined) {
       validFields.attachment = "";
     }
 
-    // 🔥 Use Firestore's generated document ID, not the task's `id` field
     const taskDoc = doc(db, "tasks", taskId);
 
     await updateDoc(taskDoc, {
@@ -119,8 +106,6 @@ export const updateTask = async (
   }
 };
 
-
-// ❌ Delete a task
 export const deleteTask = async (taskId: string) => {
   try {
     const taskRef = doc(db, "tasks", taskId);
@@ -128,7 +113,6 @@ export const deleteTask = async (taskId: string) => {
     console.log("Task deleted successfully");
   } catch (error) {
     console.error("Error deleting task:", error);
-    // toast.error("Failed to delete task. Please try again.");
     throw error;
   }
 };

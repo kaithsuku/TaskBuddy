@@ -27,7 +27,6 @@ const BoardView = ({
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const [selectedTask, setSelectedTask] = useState<Task | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  // const [isEditMode, setIsEditMode] = useState(false);
 
   const theme = useTheme();
   const isTablet = useMediaQuery(theme.breakpoints.down("md"));
@@ -62,12 +61,6 @@ const BoardView = ({
       );
     }
   };
-
-  // const handleMenuOpen = (event: React.MouseEvent<HTMLButtonElement>, task: Task) => {
-  //   setAnchorEl(event.currentTarget);
-  //   setSelectedTask(task);
-  // };
-
   const handleMenuClose = () => {
     setAnchorEl(null);
   };

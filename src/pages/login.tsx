@@ -1,7 +1,7 @@
 import { useNavigate } from "react-router-dom";
-import taskManagementUI from "../assets/Task list view 3.svg"; // Replace with the actual path to your UI asset
-import backgroundCircle from "../assets/circles_bg.svg"; // Replace with the actual path to your circle asset
-import googleLogo from "../assets/google-logo.png"; // Replace with the actual path to your Google logo asset
+import taskManagementUI from "../assets/Task list view 3.svg";
+import backgroundCircle from "../assets/circles_bg.svg"; 
+import googleLogo from "../assets/google-logo.png";
 import { signInWithGoogle } from "../firebase";
 
 const Login = () => {

@@ -3,8 +3,6 @@ import Login from "./pages/login";
 import Home from "./pages/home";
 import "./index.css";
 
-// import Dashboard from "./pages/Dashboard";
-
 const App = () => {
   return (
     <Router>

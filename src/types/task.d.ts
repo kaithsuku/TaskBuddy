@@ -3,8 +3,8 @@ export interface Task {
   title: string;
   description: string;
   dueDate: string;
-  category: string[]; // Updated to an array
-  status: "TO-DO" | "IN-PROGRESS" | "COMPLETED"; // Explicit types
+  category: string[]; 
+  status: "TO-DO" | "IN-PROGRESS" | "COMPLETED";
   createdBy: string;
   createdAt: string;
   updatedAt: string;
