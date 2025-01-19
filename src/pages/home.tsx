@@ -1,6 +1,5 @@
-import  { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import Header from "../components/Header";
-import Tabs from "../components/Tabs";
 import Toolbar from "../components/Toolbar";
 import AddTaskModal from "../components/AddtaskModal";
 import TaskDetailsDialog from "../components/TaskDetailsDialog";
@@ -8,6 +7,8 @@ import { fetchTasks, addTask, updateTask, deleteTask } from "../services/taskSer
 import { Task } from "../types/task";
 import TaskManager from "../components/TaskManager";
 import BoardView from "../components/BoardView";
+import useMediaQuery from "@mui/material/useMediaQuery";
+import Tabs from "../components/Tabs";
 
 const Home = () => {
   const [activeTab, setActiveTab] = useState<"list" | "board">("list");
@@ -20,16 +21,16 @@ const Home = () => {
     startDate: null,
     endDate: null,
   });
-
   const [selectedTask, setSelectedTask] = useState<Task | null>(null);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
-  
+
+  // Check if the screen width is below 768px (mobile view)
+  const isMobile = useMediaQuery("(max-width: 768px)");
 
   const handleTaskClick = (task: Task) => {
     setSelectedTask(task);
     setIsDialogOpen(true);
   };
-  
 
   const user = {
     name: localStorage.getItem("user_name") || "",
@@ -62,6 +63,7 @@ const Home = () => {
       console.error("Error adding task:", error);
     }
   };
+
   const handleUpdateTask = async (taskId: string, updatedFields: Partial<Task>) => {
     try {
       await updateTask(taskId, updatedFields);
@@ -91,23 +93,19 @@ const Home = () => {
     applyFilters(tasks, filters, query);
   };
 
-  const handleFilterChange = (updatedFilters: {
-    category: string;
-    startDate: Date | null;
-    endDate: Date | null;
-  }) => {
+  const handleFilterChange = (updatedFilters: { category: string; startDate: Date | null; endDate: Date | null }) => {
     setFilters(updatedFilters);
     applyFilters(tasks, updatedFilters, searchQuery);
   };
-  
+
   const applyFilters = (allTasks: Task[], appliedFilters: typeof filters, searchQuery: string) => {
     let filtered = [...allTasks];
-  
+
     // Filter by category
     if (appliedFilters.category) {
       filtered = filtered.filter((task) => task.category.includes(appliedFilters.category));
     }
-  
+
     // Filter by date range
     if (appliedFilters.startDate && appliedFilters.endDate) {
       const start = new Date(appliedFilters.startDate).setHours(0, 0, 0, 0);
@@ -117,7 +115,7 @@ const Home = () => {
         return taskDueDate >= start && taskDueDate <= end;
       });
     }
-  
+
     // Search filter
     if (searchQuery.trim()) {
       filtered = filtered.filter((task) =>
@@ -125,34 +123,30 @@ const Home = () => {
         task.description.toLowerCase().includes(searchQuery.toLowerCase())
       );
     }
-  
+
     setFilteredTasks(filtered);
   };
-  
-  
-
 
   return (
     <div className="min-h-screen bg-white">
       <Header user={user} />
       <main className="p-4">
-        <Tabs activeTab={activeTab} setActiveTab={setActiveTab} />
+        {!isMobile && <Tabs activeTab={activeTab} setActiveTab={setActiveTab} />}
         <Toolbar
           onAddTask={() => setIsModalOpen(true)}
           onSearch={handleSearch}
           onFilterChange={handleFilterChange}
         />
         <div className="p-5">
-          {activeTab === "list" ? (
+          {isMobile || activeTab === "list" ? (
             <TaskManager
-            tasks={filteredTasks}
-            onUpdateTask={handleUpdateTask}
-            onDeleteTask={handleDeleteTask}
-            onAddTask={handleAddTask}
-            setTasks={setTasks}
-            onTaskClick={handleTaskClick} 
-          />
-          
+              tasks={filteredTasks}
+              onUpdateTask={handleUpdateTask}
+              onDeleteTask={handleDeleteTask}
+              onAddTask={handleAddTask}
+              setTasks={setTasks}
+              onTaskClick={handleTaskClick}
+            />
           ) : (
             <BoardView
               tasks={filteredTasks}
