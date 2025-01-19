@@ -30,8 +30,7 @@ const TaskManager = ({
   onUpdateTask,
   onDeleteTask,
   onAddTask,
-  setTasks,
-  onTaskClick,
+  setTasks
 }: {
   tasks: Task[];
   onUpdateTask: (taskId: string, updatedFields: Partial<Task>) => void;
