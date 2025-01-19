@@ -1,4 +1,3 @@
-import React from "react";
 import task_icon from "../assets/task_icon.svg";
 
 const Header = ({ user, onLogout }: { user: { name: string; photo: string }; onLogout: () => void }) => {
