@@ -334,7 +334,10 @@ const TaskManager = ({
                               border: "1px solid #CCC",
                             }}
                           >
-                            <Typography className="text-black">+</Typography>
+                            <Typography className="text-black">
+                              {newTask.status || "+"}{" "}
+                              {/* Display selected status */}
+                            </Typography>
                           </Button>
                           <Menu
                             anchorEl={statusAnchor}
@@ -342,26 +345,29 @@ const TaskManager = ({
                             onClose={() => setStatusAnchor(null)}
                           >
                             <MenuItem
-                              onClick={() =>
-                                setNewTask({ ...newTask, status: "TO-DO" })
-                              }
+                              onClick={() => {
+                                setNewTask({ ...newTask, status: "TO-DO" });
+                                setStatusAnchor(null);
+                              }}
                             >
                               TO-DO
                             </MenuItem>
                             <MenuItem
-                              onClick={() =>
+                              onClick={() => {
                                 setNewTask({
                                   ...newTask,
                                   status: "IN-PROGRESS",
-                                })
-                              }
+                                });
+                                setStatusAnchor(null);
+                              }}
                             >
                               IN-PROGRESS
                             </MenuItem>
                             <MenuItem
-                              onClick={() =>
-                                setNewTask({ ...newTask, status: "COMPLETED" })
-                              }
+                              onClick={() => {
+                                setNewTask({ ...newTask, status: "COMPLETED" });
+                                setStatusAnchor(null);
+                              }}
                             >
                               COMPLETED
                             </MenuItem>
@@ -386,7 +392,10 @@ const TaskManager = ({
                               border: "1px solid #CCC",
                             }}
                           >
-                            <Typography className="text-black">+</Typography>
+                            <Typography className="text-black">
+                              {newTask.category?.[0] || "+"}{" "}
+                              {/* Display selected category */}
+                            </Typography>
                           </Button>
                           <Menu
                             anchorEl={categoryAnchor}
@@ -394,19 +403,21 @@ const TaskManager = ({
                             onClose={() => setCategoryAnchor(null)}
                           >
                             <MenuItem
-                              onClick={() =>
-                                setNewTask({ ...newTask, category: ["Work"] })
-                              }
+                              onClick={() => {
+                                setNewTask({ ...newTask, category: ["Work"] });
+                                setCategoryAnchor(null);
+                              }}
                             >
                               Work
                             </MenuItem>
                             <MenuItem
-                              onClick={() =>
+                              onClick={() => {
                                 setNewTask({
                                   ...newTask,
                                   category: ["Personal"],
-                                })
-                              }
+                                });
+                                setCategoryAnchor(null);
+                              }}
                             >
                               Personal
                             </MenuItem>
