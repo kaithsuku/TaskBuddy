@@ -136,8 +136,8 @@ const Home = () => {
 
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      <Header user={user} onLogout={() => console.log("Logged out")} />
+    <div className="min-h-screen bg-white">
+      <Header user={user} />
       <main className="p-4">
         <Tabs activeTab={activeTab} setActiveTab={setActiveTab} />
         <Toolbar
@@ -145,7 +145,7 @@ const Home = () => {
           onSearch={handleSearch}
           onFilterChange={handleFilterChange}
         />
-        <div className="mt-6 p-5">
+        <div className="p-5">
           {activeTab === "list" ? (
             <TaskManager
             tasks={filteredTasks}

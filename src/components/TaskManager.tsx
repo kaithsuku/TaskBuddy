@@ -217,7 +217,7 @@ const TaskManager = ({
               >
                 <AccordionSummary expandIcon={<ExpandMoreIcon />} sx={{ backgroundColor: getBackgroundColor(section), borderRadius: 2 }}>
                   <Typography sx={{ fontWeight: "bold" }}>
-                    {section} ({sectionTasks.length})
+                    {section === "TO-DO" ? "Todo " : section === "IN-PROGRESS" ? "In-Progress " : "Completed "}({sectionTasks.length})
                   </Typography>
                 </AccordionSummary>
                 <AccordionDetails sx={{ backgroundColor: '#F1F1F1', borderRadius: 2 }}>
@@ -226,7 +226,7 @@ const TaskManager = ({
                       <Box
                         display="grid"
                         gridTemplateColumns="repeat(4, 1fr)"
-                        alignItems="center"
+                        alignItems="center" 
                         gap={2}
                         mb={2}
                       >
