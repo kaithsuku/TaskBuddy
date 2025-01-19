@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import task_icon from "../assets/task_icon.svg";
 import logout_icon from "../assets/logout.svg";
 import { useNavigate } from "react-router-dom";

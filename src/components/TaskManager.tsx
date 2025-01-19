@@ -25,13 +25,13 @@ import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import RadioButtonUncheckedIcon from "@mui/icons-material/RadioButtonUnchecked";
 import TaskDetailsDialog from "./TaskDetailsDialog";
 
-
 const TaskManager = ({
   tasks,
   onUpdateTask,
   onDeleteTask,
   onAddTask,
   setTasks,
+  onTaskClick,
 }: {
   tasks: Task[];
   onUpdateTask: (taskId: string, updatedFields: Partial<Task>) => void;
@@ -78,7 +78,7 @@ const TaskManager = ({
     setSelectedTask(task);
     setIsDialogOpen(true);
   };
-  
+
   const groupedTasks: { [key in Task["status"]]: Task[] } = {
     "TO-DO": tasks.filter((task) => task.status === "TO-DO"),
     "IN-PROGRESS": tasks.filter((task) => task.status === "IN-PROGRESS"),
@@ -90,14 +90,12 @@ const TaskManager = ({
     setAnchorEl(event.currentTarget);
     setSelectedTask(task); // Properly set the selected task here
   };
-  
 
   const handleMenuClose = (event: React.MouseEvent<HTMLElement>) => {
     event.stopPropagation();
     setAnchorEl(null);
   };
 
-  // ✅ Drag and Drop with Backend Sync
   const handleDragEnd = async (result: DropResult) => {
     if (!result.destination) return;
 
@@ -111,20 +109,15 @@ const TaskManager = ({
     const newStatus = destination.droppableId as Task["status"];
 
     try {
-      // Optimistic UI update
       setTasks((prevTasks) =>
         prevTasks.map((task) =>
           task.id === movedTask.id ? { ...task, status: newStatus } : task
         )
       );
 
-      // Backend update
       await onUpdateTask(movedTask.id, { status: newStatus });
     } catch (error) {
       console.error("Error updating task status:", error);
-      // toast.error("Failed to update task status. Reverting changes.");
-
-      // Rollback on failure
       setTasks((prevTasks) =>
         prevTasks.map((task) =>
           task.id === movedTask.id ? { ...task, status: originalStatus } : task
@@ -144,7 +137,6 @@ const TaskManager = ({
       await onUpdateTask(taskId, { status: newStatus });
     } catch (error) {
       console.error("Error updating task status:", error);
-      // toast.error("Failed to update task status. Please try again.");
     }
   };
 
@@ -171,8 +163,6 @@ const TaskManager = ({
     setIsAddingTask(false);
   };
 
-
-
   const getBackgroundColor = (section: string) => {
     switch (section) {
       case "TO-DO":
@@ -186,17 +176,15 @@ const TaskManager = ({
     }
   };
 
-
   return (
-    <Box>
-      {/* Header */}
+    <Box sx={{ padding: { xs: "10px", sm: "20px" }, overflowX: "hidden" }}>
       <Box
         display="grid"
-        gridTemplateColumns="repeat(5, 1fr)"
+        gridTemplateColumns={{ xs: "1fr", sm: "repeat(5, 1fr)" }}
         textAlign="left"
         mb={2}
         px={2}
-        sx={{ fontWeight: "bold", fontFamily: "Mulish, sans-serif" }}
+        sx={{ fontWeight: "bold", fontFamily: "Mulish, sans-serif", display: { xs: "none", lg: "grid" } }}
       >
         <Typography sx={{ fontFamily: "Mulish, sans-serif", fontWeight: "semi-bold" }}>Task Name</Typography>
         <Typography sx={{ fontFamily: "Mulish, sans-serif", fontWeight: "semi-bold" }}>Due On</Typography>
@@ -204,7 +192,6 @@ const TaskManager = ({
         <Typography sx={{ fontFamily: "Mulish, sans-serif", fontWeight: "semi-bold" }}>Task Category</Typography>
       </Box>
 
-      {/* Task Sections */}
       <DragDropContext onDragEnd={handleDragEnd}>
         {Object.entries(groupedTasks).map(([section, sectionTasks]) => (
           <Droppable key={section} droppableId={section}>
@@ -225,7 +212,7 @@ const TaskManager = ({
                     <>
                       <Box
                         display="grid"
-                        gridTemplateColumns="repeat(4, 1fr)"
+                        gridTemplateColumns={{ xs: "1fr", sm: "repeat(4, 1fr)" }}
                         alignItems="center" 
                         gap={2}
                         mb={2}
@@ -305,7 +292,7 @@ const TaskManager = ({
                           {...provided.draggableProps}
                           {...provided.dragHandleProps}
                           display="grid"
-                          gridTemplateColumns="repeat(5, 1fr)"
+                          gridTemplateColumns={{ xs: "1fr", sm: "repeat(5, 1fr)" }}
                           alignItems="center"
                           py={1}
                           px={2}
@@ -382,7 +369,6 @@ const TaskManager = ({
         />
       )}
 
-      {/* Bulk Actions */}
       {selectedTasks.length > 0 && (
         <Box
           position="fixed"
