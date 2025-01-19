@@ -291,7 +291,7 @@ const TaskManager = ({
                           {...provided.draggableProps}
                           {...provided.dragHandleProps}
                           display="grid"
-                          gridTemplateColumns={{ xs: "1fr", sm: "repeat(5, 1fr)" }}
+                          gridTemplateColumns={{ xs: "1fr", lg: "repeat(5, 1fr)" }}
                           alignItems="center"
                           py={1}
                           px={2}
@@ -300,40 +300,38 @@ const TaskManager = ({
                           sx={{ cursor: "pointer" }}
                         >
                           <Box display="flex" alignItems="center" gap={1}>
-                          <Checkbox
-                            checked={selectedTasks.includes(task.id)}
-                            onChange={() => toggleTaskSelection(task.id)}
-                            onClick={(e) => e.stopPropagation()}
-                          />
+                            {task.status === "COMPLETED" && <CheckCircleIcon color="success" sx={{ display: { xs: "none", lg: "inline" } }} />}
+                            {task.status !== "COMPLETED" && <RadioButtonUncheckedIcon color="disabled" sx={{ display: { xs: "none", lg: "inline" } }} />}
+                            <Checkbox
+                              checked={selectedTasks.includes(task.id)}
+                              onChange={() => toggleTaskSelection(task.id)}
+                              onClick={(e) => e.stopPropagation()}
+                            />
                             <DragIndicatorIcon />
-                            {task.status === "COMPLETED" ? (
-                              <CheckCircleIcon color="success" />
-                            ) : (
-                              <RadioButtonUncheckedIcon color="disabled" />
-                            )}
                             <Typography sx={{ fontFamily: "Mulish, sans-serif", fontWeight: "bold", textDecoration: task.status === "COMPLETED" ? "line-through" : "none" }}>{task.title}</Typography>
                           </Box>
-                          <Typography sx={{ fontFamily: "Mulish, sans-serif", fontWeight: "bold" }}>{task.dueDate}</Typography>
-                            <Select
-                              value={task.status}
-                              onChange={(e) => handleStatusChange(task.id, e.target.value as Task["status"])}
-                              size="small"
-                              displayEmpty
-                              sx={{ 
+                          <Typography sx={{ fontFamily: "Mulish, sans-serif", display: { xs: "none", lg: "inline" } }}>{task.dueDate}</Typography>
+                          <Select
+                            value={task.status}
+                            onChange={(e) => handleStatusChange(task.id, e.target.value as Task["status"])}
+                            size="small"
+                            displayEmpty
+                            sx={{ 
                               fontFamily: "Mulish, sans-serif", 
                               fontWeight: "bold", 
                               backgroundColor: '#DDDADD', 
                               borderRadius: 3, 
                               padding: 1, 
-                              width: '50%', 
+                              width: '60%', 
                               border: 'none',
-                              }}
-                            >
-                              <DropdownItem value="TO-DO" >TO-DO</DropdownItem>
-                              <DropdownItem value="IN-PROGRESS">IN PROGRESS</DropdownItem>
-                              <DropdownItem value="COMPLETED">COMPLETED</DropdownItem>
-                            </Select>
-                          <Typography sx={{ fontFamily: "Mulish, sans-serif", fontWeight: "bold" }}>{task.category.join(", ")}</Typography>
+                              display: { xs: "none", lg: "inline" }
+                            }}
+                          >
+                            <DropdownItem value="TO-DO">TO-DO</DropdownItem>
+                            <DropdownItem value="IN-PROGRESS">IN PROGRESS</DropdownItem>
+                            <DropdownItem value="COMPLETED">COMPLETED</DropdownItem>
+                          </Select>
+                          <Typography sx={{ fontFamily: "Mulish, sans-serif", display: { xs: "none", lg: "inline" } }}>{task.category.join(", ")}</Typography>
                           <IconButton onClick={(event => handleMenuOpen(event, task))}>
                             <MoreVertIcon />
                           </IconButton>
@@ -398,6 +396,7 @@ const TaskManager = ({
         message="Action completed successfully!"
       />
     </Box>
+
   );
 };
 

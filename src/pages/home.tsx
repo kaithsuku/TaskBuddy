@@ -91,33 +91,45 @@ const Home = () => {
     applyFilters(tasks, filters, query);
   };
 
-  const handleFilterChange = (updatedFilters: { category: string; startDate: Date | null; endDate: Date | null }) => {
+  const handleFilterChange = (updatedFilters: {
+    category: string;
+    startDate: Date | null;
+    endDate: Date | null;
+  }) => {
     setFilters(updatedFilters);
     applyFilters(tasks, updatedFilters, searchQuery);
   };
+  
   const applyFilters = (allTasks: Task[], appliedFilters: typeof filters, searchQuery: string) => {
-    let filtered = allTasks;
-
+    let filtered = [...allTasks];
+  
+    // Filter by category
     if (appliedFilters.category) {
       filtered = filtered.filter((task) => task.category.includes(appliedFilters.category));
     }
-
+  
+    // Filter by date range
     if (appliedFilters.startDate && appliedFilters.endDate) {
+      const start = new Date(appliedFilters.startDate).setHours(0, 0, 0, 0);
+      const end = new Date(appliedFilters.endDate).setHours(23, 59, 59, 999);
       filtered = filtered.filter((task) => {
-        const taskDueDate = new Date(task.dueDate);
-        return taskDueDate >= appliedFilters.startDate! && taskDueDate <= appliedFilters.endDate!;
+        const taskDueDate = new Date(task.dueDate).getTime();
+        return taskDueDate >= start && taskDueDate <= end;
       });
     }
-
+  
+    // Search filter
     if (searchQuery.trim()) {
       filtered = filtered.filter((task) =>
         task.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
         task.description.toLowerCase().includes(searchQuery.toLowerCase())
       );
     }
-
+  
     setFilteredTasks(filtered);
   };
+  
+  
 
 
   return (
