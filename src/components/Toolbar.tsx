@@ -165,10 +165,10 @@ const Toolbar: React.FC<ToolbarProps> = ({
         <Button
           variant="contained"
           sx={{
-            backgroundColor: "#8A2BE2",
+            backgroundColor: "#7B1984",
             textTransform: "none",
             borderRadius: "20px",
-            padding: "8px 16px",
+            padding: "8px 18px",
           }}
           onClick={onAddTask}
           className="w-full sm:w-auto"

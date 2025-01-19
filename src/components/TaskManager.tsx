@@ -19,7 +19,12 @@ import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
 import DragIndicatorIcon from "@mui/icons-material/DragIndicator";
-import { DragDropContext, Droppable, Draggable, DropResult } from "@hello-pangea/dnd";
+import {
+  DragDropContext,
+  Droppable,
+  Draggable,
+  DropResult,
+} from "@hello-pangea/dnd";
 import { Task } from "../types/task";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import RadioButtonUncheckedIcon from "@mui/icons-material/RadioButtonUnchecked";
@@ -30,7 +35,7 @@ const TaskManager = ({
   onUpdateTask,
   onDeleteTask,
   onAddTask,
-  setTasks
+  setTasks,
 }: {
   tasks: Task[];
   onUpdateTask: (taskId: string, updatedFields: Partial<Task>) => void;
@@ -97,26 +102,34 @@ const TaskManager = ({
 
   const handleDragEnd = async (result: DropResult) => {
     if (!result.destination) return;
-
+  
     const { source, destination } = result;
-    if (source.droppableId === destination.droppableId && source.index === destination.index) {
+  
+    if (
+      source.droppableId === destination.droppableId &&
+      source.index === destination.index
+    ) {
       return;
     }
-
+  
     const movedTask = groupedTasks[source.droppableId as Task["status"]][source.index];
     const originalStatus = movedTask.status;
     const newStatus = destination.droppableId as Task["status"];
-
+  
+    // Optimistically update the UI
+    setTasks((prevTasks) =>
+      prevTasks.map((task) =>
+        task.id === movedTask.id ? { ...task, status: newStatus } : task
+      )
+    );
+  
     try {
-      setTasks((prevTasks) =>
-        prevTasks.map((task) =>
-          task.id === movedTask.id ? { ...task, status: newStatus } : task
-        )
-      );
-
+      // Update Firebase
       await onUpdateTask(movedTask.id, { status: newStatus });
     } catch (error) {
       console.error("Error updating task status:", error);
+  
+      // Revert the UI update if Firebase update fails
       setTasks((prevTasks) =>
         prevTasks.map((task) =>
           task.id === movedTask.id ? { ...task, status: originalStatus } : task
@@ -124,8 +137,12 @@ const TaskManager = ({
       );
     }
   };
+  
 
-  const handleStatusChange = async (taskId: string, newStatus: Task["status"]) => {
+  const handleStatusChange = async (
+    taskId: string,
+    newStatus: Task["status"]
+  ) => {
     try {
       setTasks((prevTasks) =>
         prevTasks.map((task) =>
@@ -183,12 +200,32 @@ const TaskManager = ({
         textAlign="left"
         mb={2}
         px={2}
-        sx={{ fontWeight: "bold", fontFamily: "Mulish, sans-serif", display: { xs: "none", lg: "grid" } }}
+        sx={{
+          fontWeight: "bold",
+          fontFamily: "Mulish, sans-serif",
+          display: { xs: "none", lg: "grid" },
+        }}
       >
-        <Typography sx={{ fontFamily: "Mulish, sans-serif", fontWeight: "semi-bold" }}>Task Name</Typography>
-        <Typography sx={{ fontFamily: "Mulish, sans-serif", fontWeight: "semi-bold" }}>Due On</Typography>
-        <Typography sx={{ fontFamily: "Mulish, sans-serif", fontWeight: "semi-bold" }}>Task Status</Typography>
-        <Typography sx={{ fontFamily: "Mulish, sans-serif", fontWeight: "semi-bold" }}>Task Category</Typography>
+        <Typography
+          sx={{ fontFamily: "Mulish, sans-serif", fontWeight: "semi-bold" }}
+        >
+          Task Name
+        </Typography>
+        <Typography
+          sx={{ fontFamily: "Mulish, sans-serif", fontWeight: "semi-bold" }}
+        >
+          Due On
+        </Typography>
+        <Typography
+          sx={{ fontFamily: "Mulish, sans-serif", fontWeight: "semi-bold" }}
+        >
+          Task Status
+        </Typography>
+        <Typography
+          sx={{ fontFamily: "Mulish, sans-serif", fontWeight: "semi-bold" }}
+        >
+          Task Category
+        </Typography>
       </Box>
 
       <DragDropContext onDragEnd={handleDragEnd}>
@@ -201,18 +238,34 @@ const TaskManager = ({
                 ref={provided.innerRef}
                 {...provided.droppableProps}
               >
-                <AccordionSummary expandIcon={<ExpandMoreIcon />} sx={{ backgroundColor: getBackgroundColor(section), borderRadius: 2 }}>
+                <AccordionSummary
+                  expandIcon={<ExpandMoreIcon />}
+                  sx={{
+                    backgroundColor: getBackgroundColor(section),
+                    borderRadius: 2,
+                  }}
+                >
                   <Typography sx={{ fontWeight: "bold" }}>
-                    {section === "TO-DO" ? "Todo " : section === "IN-PROGRESS" ? "In-Progress " : "Completed "}({sectionTasks.length})
+                    {section === "TO-DO"
+                      ? "Todo "
+                      : section === "IN-PROGRESS"
+                      ? "In-Progress "
+                      : "Completed "}
+                    ({sectionTasks.length})
                   </Typography>
                 </AccordionSummary>
-                <AccordionDetails sx={{ backgroundColor: '#F1F1F1', borderRadius: 2 }}>
+                <AccordionDetails
+                  sx={{ backgroundColor: "#F1F1F1", borderRadius: 2 }}
+                >
                   {section === "TO-DO" && isAddingTask && (
                     <>
                       <Box
                         display="grid"
-                        gridTemplateColumns={{ xs: "1fr", sm: "repeat(4, 1fr)" }}
-                        alignItems="center" 
+                        gridTemplateColumns={{
+                          xs: "1fr",
+                          sm: "repeat(4, 1fr)",
+                        }}
+                        alignItems="center"
                         gap={2}
                         mb={2}
                       >
@@ -236,19 +289,29 @@ const TaskManager = ({
                         <Select
                           value={newTask.status || "TO-DO"}
                           onChange={(e) =>
-                            setNewTask({ ...newTask, status: e.target.value as Task["status"] })
+                            setNewTask({
+                              ...newTask,
+                              status: e.target.value as Task["status"],
+                            })
                           }
                           size="small"
                           displayEmpty
                         >
                           <DropdownItem value="TO-DO">TO-DO</DropdownItem>
-                          <DropdownItem value="In Progress">In Progress</DropdownItem>
-                          <DropdownItem value="Completed">Completed</DropdownItem>
+                          <DropdownItem value="In Progress">
+                            In Progress
+                          </DropdownItem>
+                          <DropdownItem value="Completed">
+                            Completed
+                          </DropdownItem>
                         </Select>
                         <Select
                           value={newTask.category?.[0] || "Work"}
                           onChange={(e) =>
-                            setNewTask({ ...newTask, category: [e.target.value] })
+                            setNewTask({
+                              ...newTask,
+                              category: [e.target.value],
+                            })
                           }
                           size="small"
                           displayEmpty
@@ -284,14 +347,21 @@ const TaskManager = ({
                     </Button>
                   )}
                   {sectionTasks.map((task, index) => (
-                    <Draggable key={task.id} draggableId={task.id} index={index}>
+                    <Draggable
+                      key={task.id}
+                      draggableId={task.id}
+                      index={index}
+                    >
                       {(provided) => (
                         <Box
                           ref={provided.innerRef}
                           {...provided.draggableProps}
                           {...provided.dragHandleProps}
                           display="grid"
-                          gridTemplateColumns={{ xs: "1fr", lg: "repeat(5, 1fr)" }}
+                          gridTemplateColumns={{
+                            xs: "1fr",
+                            lg: "repeat(5, 1fr)",
+                          }}
                           alignItems="center"
                           py={1}
                           px={2}
@@ -300,39 +370,87 @@ const TaskManager = ({
                           sx={{ cursor: "pointer" }}
                         >
                           <Box display="flex" alignItems="center" gap={1}>
-                            {task.status === "COMPLETED" && <CheckCircleIcon color="success" sx={{ display: { xs: "none", lg: "inline" } }} />}
-                            {task.status !== "COMPLETED" && <RadioButtonUncheckedIcon color="disabled" sx={{ display: { xs: "none", lg: "inline" } }} />}
+                            {task.status === "COMPLETED" && (
+                              <CheckCircleIcon
+                                color="success"
+                                sx={{ display: { xs: "none", lg: "inline" } }}
+                              />
+                            )}
+                            {task.status !== "COMPLETED" && (
+                              <RadioButtonUncheckedIcon
+                                color="disabled"
+                                sx={{ display: { xs: "none", lg: "inline" } }}
+                              />
+                            )}
                             <Checkbox
                               checked={selectedTasks.includes(task.id)}
                               onChange={() => toggleTaskSelection(task.id)}
                               onClick={(e) => e.stopPropagation()}
                             />
                             <DragIndicatorIcon />
-                            <Typography sx={{ fontFamily: "Mulish, sans-serif", fontWeight: "bold", textDecoration: task.status === "COMPLETED" ? "line-through" : "none" }}>{task.title}</Typography>
+                            <Typography
+                              sx={{
+                                fontFamily: "Mulish, sans-serif",
+                                fontWeight: "bold",
+                                textDecoration:
+                                  task.status === "COMPLETED"
+                                    ? "line-through"
+                                    : "none",
+                              }}
+                            >
+                              {task.title}
+                            </Typography>
                           </Box>
-                          <Typography sx={{ fontFamily: "Mulish, sans-serif", display: { xs: "none", lg: "inline" } }}>{task.dueDate}</Typography>
+                          <Typography
+                            sx={{
+                              fontFamily: "Mulish, sans-serif",
+                              display: { xs: "none", lg: "inline" },
+                            }}
+                          >
+                            {task.dueDate}
+                          </Typography>
                           <Select
                             value={task.status}
-                            onChange={(e) => handleStatusChange(task.id, e.target.value as Task["status"])}
+                            onClick={(e) => e.stopPropagation()} // Prevents triggering the onClick for the task row
+                            onChange={(e) =>
+                              handleStatusChange(
+                                task.id,
+                                e.target.value as Task["status"]
+                              )
+                            }
                             size="small"
                             displayEmpty
-                            sx={{ 
-                              fontFamily: "Mulish, sans-serif", 
-                              fontWeight: "bold", 
-                              backgroundColor: '#DDDADD', 
-                              borderRadius: 3, 
-                              padding: 1, 
-                              width: '60%', 
-                              border: 'none',
-                              display: { xs: "none", lg: "inline" }
+                            sx={{
+                              fontFamily: "Mulish, sans-serif",
+                              fontWeight: "semi-bold",
+                              backgroundColor: "#DDDADD",
+                              borderRadius: 3,
+                              padding: 1,
+                              width: "75%",
+                              border: "none",
+                              display: { xs: "none", lg: "inline" },
                             }}
                           >
                             <DropdownItem value="TO-DO">TO-DO</DropdownItem>
-                            <DropdownItem value="IN-PROGRESS">IN PROGRESS</DropdownItem>
-                            <DropdownItem value="COMPLETED">COMPLETED</DropdownItem>
+                            <DropdownItem value="IN-PROGRESS">
+                              IN PROGRESS
+                            </DropdownItem>
+                            <DropdownItem value="COMPLETED">
+                              COMPLETED
+                            </DropdownItem>
                           </Select>
-                          <Typography sx={{ fontFamily: "Mulish, sans-serif", display: { xs: "none", lg: "inline" } }}>{task.category.join(", ")}</Typography>
-                          <IconButton onClick={(event => handleMenuOpen(event, task))}>
+
+                          <Typography
+                            sx={{
+                              fontFamily: "Mulish, sans-serif",
+                              display: { xs: "none", lg: "inline" },
+                            }}
+                          >
+                            {task.category.join(", ")}
+                          </Typography>
+                          <IconButton
+                            onClick={(event) => handleMenuOpen(event, task)}
+                          >
                             <MoreVertIcon />
                           </IconButton>
                           <Menu
@@ -341,10 +459,14 @@ const TaskManager = ({
                             onClose={handleMenuClose}
                           >
                             <MenuItem onClick={handleMenuClose}>Edit</MenuItem>
-                            <MenuItem onClick={(event) => {
-                              handleMenuClose(event);
-                              onDeleteTask(task.id);
-                            }}>Delete</MenuItem>
+                            <MenuItem
+                              onClick={(event) => {
+                                handleMenuClose(event);
+                                onDeleteTask(task.id);
+                              }}
+                            >
+                              Delete
+                            </MenuItem>
                           </Menu>
                         </Box>
                       )}
@@ -366,37 +488,112 @@ const TaskManager = ({
         />
       )}
 
-      {selectedTasks.length > 0 && (
-        <Box
-          position="fixed"
-          bottom={16}
-          left="50%"
-          sx={{ transform: "translateX(-50%)", backgroundColor: "#333", borderRadius: 2, p: 2, display: "flex", gap: 2 }}
-        >
-          <Typography color="white">{selectedTasks.length} Task(s) Selected</Typography>
-          <Select
-            value=""
-            displayEmpty
-            onChange={(e) => handleBulkStatusChange(e.target.value as Task["status"])}
-          >
-            <DropdownItem value="TO-DO">To-Do</DropdownItem>
-            <DropdownItem value="IN-PROGRESS">In Progress</DropdownItem>
-            <DropdownItem value="COMPLETED">Completed</DropdownItem>
-          </Select>
-          <Button variant="contained" color="error" onClick={handleBulkDelete}>
-            Delete
-          </Button>
-        </Box>
-      )}
+{selectedTasks.length > 0 && (
+  <Box
+    position="fixed"
+    bottom={16}
+    left="50%"
+    sx={{
+      transform: "translateX(-50%)",
+      backgroundColor: "#222",
+      borderRadius: "16px",
+      padding: "8px",
+      display: "flex",
+      alignItems: "center",
+      justifyContent: "space-between",
+      gap: 2,
+      width: "50%",
+      border: "1px solid #444",
+      boxShadow: "0px 4px 12px rgba(0, 0, 0, 0.3)",
+    }}
+  >
+    {/* Tasks Selected Box */}
+    <Box
+      sx={{
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "space-between",
+        padding: "6px 12px",
+        borderRadius: "12px",
+        border: "1px solid white",
+        color: "white",
+        fontWeight: "bold",
+        gap: 1,
+        backgroundColor: "#333",
+        cursor: "pointer",
+      }}
+      onClick={() => setSelectedTasks([])} // Clear selection when clicked
+    >
+      {selectedTasks.length} Task(s) Selected
+      <Box
+        sx={{
+          width: "20px",
+          height: "20px",
+          borderRadius: "50%",
+          backgroundColor: "#444",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          fontWeight: "bold",
+          color: "white",
+          cursor: "pointer",
+        }}
+      >
+        ×
+      </Box>
+    </Box>
 
-      <Snackbar
+    {/* Status Dropdown */}
+    <Select
+      value=""
+      displayEmpty
+      onChange={(e) =>
+        handleBulkStatusChange(e.target.value as Task["status"])
+      }
+      sx={{
+        backgroundColor: "#444",
+        color: "white",
+        borderRadius: "8px",
+        width: "30%",
+        "& .MuiSelect-icon": { color: "white" },
+      }}
+    >
+      <DropdownItem value="" disabled>
+        Status
+      </DropdownItem>
+      <DropdownItem value="TO-DO">To-Do</DropdownItem>
+      <DropdownItem value="IN-PROGRESS">In Progress</DropdownItem>
+      <DropdownItem value="COMPLETED">Completed</DropdownItem>
+    </Select>
+
+    {/* Delete Button */}
+    <Button
+      variant="contained"
+      color="error"
+      onClick={handleBulkDelete}
+      sx={{
+        backgroundColor: "#D32F2F",
+        color: "white",
+        fontWeight: "bold",
+        textTransform: "none",
+        borderRadius: "8px",
+        padding: "8px 16px",
+        "&:hover": {
+          backgroundColor: "#B71C1C",
+        },
+      }}
+    >
+      Delete
+    </Button>
+  </Box>
+)}
+ <Snackbar
         open={isSnackbarOpen}
         autoHideDuration={3000}
         onClose={() => setIsSnackbarOpen(false)}
         message="Action completed successfully!"
       />
     </Box>
-
   );
 };
 
