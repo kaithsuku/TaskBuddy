@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import  { useState, useEffect } from "react";
 import Header from "../components/Header";
 import Tabs from "../components/Tabs";
 import Toolbar from "../components/Toolbar";
@@ -162,7 +162,7 @@ const Home = () => {
               onUpdateTask={handleUpdateTask}
               onDeleteTask={handleDeleteTask}
               setTasks={setTasks}
-              onTaskClick={handleTaskClick}
+              // onTaskClick={handleTaskClick}
             />
           )}
         </div>

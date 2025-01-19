@@ -85,10 +85,12 @@ const TaskManager = ({
     COMPLETED: tasks.filter((task) => task.status === "COMPLETED"),
   };
 
-  const handleMenuOpen = (event: React.MouseEvent<HTMLElement>) => {
+  const handleMenuOpen = (event: React.MouseEvent<HTMLElement>, task: Task) => {
     event.stopPropagation();
     setAnchorEl(event.currentTarget);
+    setSelectedTask(task); // Properly set the selected task here
   };
+  
 
   const handleMenuClose = (event: React.MouseEvent<HTMLElement>) => {
     event.stopPropagation();
@@ -346,7 +348,7 @@ const TaskManager = ({
                               <DropdownItem value="COMPLETED">COMPLETED</DropdownItem>
                             </Select>
                           <Typography sx={{ fontFamily: "Mulish, sans-serif", fontWeight: "bold" }}>{task.category.join(", ")}</Typography>
-                          <IconButton onClick={handleMenuOpen}>
+                          <IconButton onClick={(event => handleMenuOpen(event, task))}>
                             <MoreVertIcon />
                           </IconButton>
                           <Menu

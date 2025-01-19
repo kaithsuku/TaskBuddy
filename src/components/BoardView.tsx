@@ -3,11 +3,11 @@ import { DragDropContext, Droppable, Draggable, DropResult } from "@hello-pangea
 import {
   Box,
   Typography,
-  IconButton,
   Menu,
   MenuItem,
   useMediaQuery,
-  useTheme
+  useTheme,
+  IconButton
 } from "@mui/material";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 import { Task } from "../types/task";
@@ -27,7 +27,7 @@ const BoardView = ({
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const [selectedTask, setSelectedTask] = useState<Task | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [isEditMode, setIsEditMode] = useState(false);
+  // const [isEditMode, setIsEditMode] = useState(false);
 
   const theme = useTheme();
   const isTablet = useMediaQuery(theme.breakpoints.down("md"));
@@ -63,17 +63,17 @@ const BoardView = ({
     }
   };
 
-  const handleMenuOpen = (event: React.MouseEvent<HTMLButtonElement>, task: Task) => {
-    setAnchorEl(event.currentTarget);
-    setSelectedTask(task);
-  };
+  // const handleMenuOpen = (event: React.MouseEvent<HTMLButtonElement>, task: Task) => {
+  //   setAnchorEl(event.currentTarget);
+  //   setSelectedTask(task);
+  // };
 
   const handleMenuClose = () => {
     setAnchorEl(null);
   };
 
   const handleEditTask = () => {
-    setIsEditMode(true);
+    // setIsEditMode(true);
     setIsModalOpen(true);
     handleMenuClose();
   };
@@ -87,7 +87,7 @@ const BoardView = ({
 
   const handleOpenDetails = (task: Task) => {
     setSelectedTask(task);
-    setIsEditMode(false);
+    // setIsEditMode(false);
     setIsModalOpen(true);
   };
 
@@ -144,7 +144,19 @@ const BoardView = ({
                           display="flex"
                           flexDirection="column"
                           justifyContent="space-between"
+                          position='relative'
                         >
+                          <IconButton
+                              size="small"
+                              sx={{ position: "absolute", top: 8, right: 8 }}
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                setAnchorEl(e.currentTarget);
+                                setSelectedTask(task);
+                              }}
+                            >
+                              <MoreVertIcon />
+                            </IconButton>
                           <Typography fontWeight="bold" sx={{ textDecoration: task.status === "COMPLETED" ? "line-through" : "none" }}>{task.title}</Typography>
                           <Box display="flex" justifyContent="space-between">
                             <Typography variant="subtitle2">{task.category.join(", ")}</Typography>
