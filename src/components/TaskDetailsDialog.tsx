@@ -76,6 +76,7 @@ const TaskDetailsDialog: React.FC<TaskDetailsDialogProps> = ({
               value={updatedTask.title || ""}
               onChange={(e) => handleFieldChange("title", e.target.value)}
               fullWidth
+              InputProps={{ style: { fontFamily: 'mulish' } }}
             />
 
             {/* Description */}
@@ -86,11 +87,12 @@ const TaskDetailsDialog: React.FC<TaskDetailsDialogProps> = ({
               value={updatedTask.description || ""}
               onChange={(e) => handleFieldChange("description", e.target.value)}
               fullWidth
+              InputProps={{ style: { fontFamily: 'mulish' } }}
             />
 
             {/* Categories */}
             <Box display="flex" gap={2}>
-              <Typography>Task Category:</Typography>
+              <Typography variant="body2" fontFamily={'mulish'}>Task Category:</Typography>
               {["Work", "Personal", "Documentation"].map((category) => (
                 <Chip
                   key={category}
@@ -107,7 +109,7 @@ const TaskDetailsDialog: React.FC<TaskDetailsDialogProps> = ({
               type="date"
               value={updatedTask.dueDate || ""}
               onChange={(e) => handleFieldChange("dueDate", e.target.value)}
-              InputLabelProps={{ shrink: true }}
+              InputLabelProps={{ shrink: true  }}
               fullWidth
             />
 
@@ -124,7 +126,7 @@ const TaskDetailsDialog: React.FC<TaskDetailsDialogProps> = ({
             </Select>
 
             {/* Attachment */}
-            <Typography>Attachment</Typography>
+            <Typography variant="h6" sx={{ fontFamily: 'mulish' }}>Attachment</Typography>
             <Button variant="outlined" component="label">
               Upload File
               <input
@@ -145,7 +147,7 @@ const TaskDetailsDialog: React.FC<TaskDetailsDialogProps> = ({
               minWidth: "250px",
             }}
           >
-            <Typography variant="h6" gutterBottom>
+            <Typography variant="h6" gutterBottom sx={{ fontFamily: 'mulish' }}>
               Activity Log
             </Typography>
             <Divider sx={{ mb: 2 }} />
@@ -156,7 +158,7 @@ const TaskDetailsDialog: React.FC<TaskDetailsDialogProps> = ({
                 : []),
               ...(task.attachment ? ["You uploaded a file."] : []),
             ].map((log, index) => (
-              <Typography key={index} variant="body2" sx={{ mb: 1 }}>
+              <Typography key={index} variant="body2" sx={{ mb: 1, fontFamily: 'mulish' }} >
                 {log}
               </Typography>
             ))}
